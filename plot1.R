@@ -1,0 +1,20 @@
+##Read data from desktop and convert to dataframe
+x<- read.table("/Users/Yoshinori/Desktop/household_power_consumption.txt",sep=";",header = TRUE,stringsAsFactors = FALSE)
+x<- tbl_df(x)
+
+###Filter data for 2007 Feb 1st and Feb 2nd
+xx<-subset(x,Date == "2/2/2007"|Date== "1/2/2007" )
+
+###Define datatype and add column for plot2-plot4
+xxx <- transform(xx, Date=as.character(Date),Time=as.character(Time),Global_active_power=as.numeric(Global_active_power),
+                 Global_reactive_power=as.numeric(Global_reactive_power),Voltage=as.numeric(Voltage),
+                 Global_intensity=as.numeric(Global_intensity),Sub_metering_1=as.numeric(Sub_metering_1),
+                 Sub_metering_2==as.numeric(Sub_metering_2),Sub_metering_3==as.numeric(Sub_metering_3)
+)
+
+xxx <- mutate(xxx, Date_Time = paste(Date, Time, sep = " "))
+xxx$Date_Time <- strptime(xxx$Date_Time, "%d/%m/%Y %H:%M:%S")
+
+###Plot1
+hist(xxx$Global_active_power, col = "red",
+     xlab = "Global Active Power (kilowatts)", main = "Global Active Power")
